@@ -1,0 +1,37 @@
+﻿{
+  "duckyclaw": {
+    "version": "1.0.0",
+    "enabled": true,
+    "inference_interval_ms": 5000,
+    "decision_cache_size": 100,
+    "max_devices": 256,
+    "local_model_path": "/data/models/",
+    "parameter_adjustment": {
+      "learning_rate": 0.01,
+      "adaptation_threshold": 0.05,
+      "history_window": 3600
+    }
+  },
+  "devices": {
+    "seed-planting": {
+      "model_name": "seed_planting_v1",
+      "control_interval_ms": 2000,
+      "parameters": ["seeding_interval", "seeding_amount", "irrigation_cycle"]
+    },
+    "vegetable-planting": {
+      "model_name": "vegetable_planting_v1",
+      "control_interval_ms": 5000,
+      "parameters": ["spray_frequency", "nutrient_ratio", "light_intensity", "fan_speed"]
+    },
+    "potato-planting": {
+      "model_name": "potato_planting_v1",
+      "control_interval_ms": 3000,
+      "parameters": ["root_moisture", "dissolved_oxygen", "spray_strength"]
+    },
+    "spirulina-culture": {
+      "model_name": "spirulina_v1",
+      "control_interval_ms": 10000,
+      "parameters": ["light_cycle", "stirring_frequency", "aeration_rate", "ph_control"]
+    }
+  }
+}

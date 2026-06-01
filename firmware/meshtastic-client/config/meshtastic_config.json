@@ -1,0 +1,22 @@
+﻿{
+  "mesh_network": {
+    "enabled": true,
+    "radio_freq_mhz": 915,
+    "tx_power_dbm": 20,
+    "bandwidth_mhz": 250,
+    "spreading_factor": 8,
+    "node_id": "gateway_main"
+  },
+  "message_types": {
+    "SENSOR_DATA": 0x01,
+    "CONTROL_CMD": 0x02,
+    "STATUS_REPORT": 0x03,
+    "OTA_UPDATE": 0x04,
+    "HEARTBEAT": 0x05
+  },
+  "retry_policy": {
+    "max_retries": 3,
+    "initial_delay_ms": 100,
+    "backoff_multiplier": 2.0
+  }
+}

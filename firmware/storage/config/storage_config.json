@@ -1,0 +1,20 @@
+﻿{
+  "storage": {
+    "device": "/dev/mmcblk0",
+    "mount_point": "/data",
+    "enable_caching": true,
+    "cache_size_mb": 64
+  },
+  "partitions": {
+    "data": {
+      "mount": "/data",
+      "size_percent": 80,
+      "fs_type": "ext4"
+    },
+    "backup": {
+      "mount": "/backup",
+      "size_percent": 20,
+      "fs_type": "ext4"
+    }
+  }
+}
