@@ -6,14 +6,14 @@
 
 - 网关：涂鸦T5 + ZS3L（预装固件），管理所有养殖设备
 - 养殖设备：STM32，通过网关管理
-- 独立设备：K230播种机，独立运行
+- 独立设备：不接入网关，独立运行
 
 ## 项目结构
 
 ```
 shennong-platform/
 ├── gateway/          # 网关
-├── auxiliary/        # 独立设备（播种机）
+├── auxiliary/        # 独立设备
 ├── cultivators/      # 养殖设备
 ├── shared/           # 共享库
 └── docs/             # 文档
@@ -21,20 +21,20 @@ shennong-platform/
 
 ## 设备列表
 
-| 设备 | 类型 | 芯片 | 说明 |
-|------|------|------|------|
-| seed-planter | 独立 | K230 | 播种机 |
-| tuber-planter | 养殖 | STM32 | 块茎种植机 |
-| algae-planter | 养殖 | STM32 | 藻类种植机 |
-| leaf-planter | 养殖 | STM32 | 叶菜种植机 |
-| fungi-planter | 养殖 | STM32 | 菌类种植机 |
+### 养殖设备（按食用部位分类）
+
+| 设备 | 类型ID | 可食用部位 | 说明 |
+|------|--------|-----------|------|
+| tuber-planter | 0x02 | 块茎 | 土豆等块茎作物 |
+| algae-planter | 0x03 | 全株 | 螺旋藻等藻类 |
+| leaf-planter | 0x04 | 叶子 | 蔬菜等叶菜类 |
+| fungi-planter | 0x05 | 子实体 | 蘑菇等菌类 |
 
 ## 快速开始
 
 ### 网关开发
 
 ```bash
-# 需要TUYACLAW SDK（从涂鸦平台获取）
 cd gateway/tuya-t5
 mkdir -p build && cd build
 cmake -DTUYA_SDK_PATH=/path/to/sdk ..
@@ -46,13 +46,6 @@ make
 ```bash
 cd cultivators/tuber-planter
 pio run
-```
-
-### 独立设备开发
-
-```bash
-cd auxiliary/seed-planter
-# 使用K230 SDK
 ```
 
 ## 文档
