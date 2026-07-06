@@ -1,35 +1,96 @@
 # 神农平台（Shennong Platform）
 
-基于城市种植的分布式AI农业生产交易平台。该项目整合硬件、固件、AI模型、3D打印图纸、云端服务和移动/本地控制，构建一套完整的开源智慧农业生态。
+基于城市种植的分布式AI农业生产系统。
 
-## 核心特性
+## 架构概述
 
-- 多类智能种植设备：种子自动播种机、蔬菜气雾种植机、土豆气雾种植机、螺旋藻培养机
-- 基于涂鸦生态的设备管理与App商城
-- T5作为AI边缘种植网关，内置 `duckyclaw`
-- 通过 `meshtastic` 建立数百台设备的传感器数据网络
-- 本地TF卡数据存储与云端备份
-- 实时自动调参、端侧自学习与云端模型训练
-- 远程APP、云端仪表盘、本地按键均可控制设备
-- 农产品上架出售，构建农业生产交易闭环
+采用"网关 + 独立设备 + 养殖设备"架构：
 
-## 仓库结构
+- 网关：涂鸦T5 + ZS3L，统一管理所有养殖设备
+- 独立设备：K230播种机，独立运行
+- 养殖设备：STM32 + ZS3L，通过网关管理
 
-- `firmware/` - 设备固件与边缘控制逻辑
-- `hardware/` - 硬件设计规范与传感器执行器说明
-- `ai-models/` - AI种植模型与训练说明
-- `3d-print/` - 3D打印部件与装配图纸说明
-- `cloud/` - 云端备份、训练、分析与交易平台说明
-- `app/` - 移动/云端App及本地UI说明
-- `docs/` - 架构文档与模块说明
+## 项目结构
 
-## 贡献说明
+```
+shennong-platform/
+├── gateway/          # 网关（T5 + ZS3L）
+│   ├── tuya-t5/      # T5网关固件
+│   └── edge-inference/ # ZS3L边缘推理
+├── auxiliary/        # 独立设备（播种机）
+├── cultivators/      # 养殖设备（按食用部位分类）
+├── shared/           # 共享PlatformIO库
+├── docs/             # 文档
+└── .vscode/          # VS Code配置
+```
 
-欢迎开源贡献：
+## 设备列表
 
-1. Fork 本仓库
-2. 阅读 `docs/ARCHITECTURE.md`
-3. 根据模块目录提交补充文档、代码、模型或硬件文件
-4. 发起 Pull Request
+### 独立设备
+| 设备 | 芯片 | 说明 |
+|------|------|------|
+| seed-planter | K230 | 播种机，图像识别 |
 
-> 本仓库初始版本以文档与架构说明为主，后续可补充固件、模型、3D图纸、APP样例等具体实现。
+### 养殖设备（按食用部位分类）
+| 设备 | 类型ID | 可食用部位 | 说明 |
+|------|--------|-----------|------|
+| tuber-planter | 0x02 | 块茎 | 土豆等块茎作物 |
+| algae-planter | 0x03 | 全株 | 螺旋藻等藻类 |
+| leaf-planter | 0x04 | 叶子 | 蔬菜等叶菜类 |
+| fungi-planter | 0x05 | 子实体 | 蘑菇等菌类 |
+
+## 技术栈
+
+- 网关：TUYACLAW框架（涂鸦T5）
+- 养殖设备：PlatformIO（STM32 + ZS3L）
+- 独立设备：K230 SDK
+- 通信：Meshtastic mesh网络
+
+## 依赖获取
+
+### TUYACLAW SDK（网关开发）
+
+网关开发需要涂鸦智能的TuyaOS SDK，需要从官方获取：
+
+1. 访问涂鸦智能开发者平台：https://developer.tuya.com/
+2. 注册并登录开发者账号
+3. 创建T5网关项目
+4. 下载TuyaOS SDK
+
+详细说明请参考：[SDK说明文档](gateway/SDK.md)
+
+### K230 SDK（独立设备开发）
+
+独立设备开发需要K230 SDK，请参考K230官方文档获取。
+
+## 快速开始
+
+### 编译网关
+
+```bash
+# 安装TuyaOS SDK后
+cd gateway/tuya-t5
+mkdir -p build && cd build
+cmake -DTUYA_SDK_PATH=/path/to/sdk ..
+make
+```
+
+### 编译养殖设备
+
+```bash
+cd cultivators/tuber-planter
+pio run
+```
+
+### 编译独立设备
+
+```bash
+cd auxiliary/seed-planter
+# 使用K230 SDK编译
+```
+
+## 文档
+
+- [架构文档](docs/ARCHITECTURE.md)
+- [部署指南](docs/DEPLOYMENT.md)
+- [SDK说明文档](gateway/SDK.md)
