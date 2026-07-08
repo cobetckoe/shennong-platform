@@ -1,64 +1,24 @@
 # 部署指南
 
-## 环境要求
+## 网关部署
 
-### 网关开发
-- 涂鸦T5开发板
-- TUYACLAW SDK（TuyaOS 3.x+）
-- CMake 3.10+
+1. 涂鸦平台创建产品
+2. Tuya Wind IDE编译
+3. 烧录WBR3
+4. 连接ZS3L
 
-### 养殖设备开发
-- 立创地阔星开发板（STM32F103C8）
-- PlatformIO CLI
+## 子机部署
 
-### 独立设备开发
-- K230开发板
-- K230 SDK
+1. 复制 `shared/sub_device_template.c` 到设备目录
+2. 修改 DEVICE_ID 和 DEVICE_TYPE
+3. 修改传感器读取逻辑
+4. STM32CubeIDE编译烧录
 
-## SDK获取
+## 设备ID分配
 
-1. 访问涂鸦开发者平台：https://developer.tuya.com/
-2. 注册并登录
-3. 创建T5网关项目
-4. 下载TuyaOS SDK
-
-详见：[SDK说明](../gateway/SDK.md)
-
-## 编译步骤
-
-### 网关
-
-```bash
-cd gateway/tuya-t5
-mkdir -p build && cd build
-cmake -DTUYA_SDK_PATH=/path/to/sdk ..
-make
-```
-
-### 养殖设备
-
-```bash
-cd cultivators/tuber-planter
-pio run
-```
-
-### 独立设备
-
-```bash
-cd auxiliary/seed-planter
-# 使用K230 SDK编译
-```
-
-## 烧录
-
-### 网关
-使用涂鸦烧录工具或串口烧录。
-
-### 养殖设备
-```bash
-pio run -t upload
-pio device monitor --baud 115200
-```
-
-### 独立设备
-参考K230开发文档。
+| 设备类型 | ID范围 | 说明 |
+|---------|--------|------|
+| tuber-planter | 0x02-0x0F | 块茎种植机 |
+| algae-planter | 0x10-0x1F | 藻类种植机 |
+| leaf-planter | 0x20-0x2F | 叶菜种植机 |
+| fungi-planter | 0x30-0x3F | 菌类种植机 |
