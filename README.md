@@ -5,7 +5,7 @@ Distributed AI agriculture production system.
 ## Architecture
 
 - Gateway: WBR3 + ZS3L (Zigbee bridge)
-- Cultivators: LK Shield + ZS3L (local control)
+- Farm: LK Shield + ZS3L (local control)
 - Auxiliary: Standalone devices
 
 ## Project Structure
@@ -15,24 +15,24 @@ shennong-platform/
 ├── gateway/
 │   └── wbr3/
 ├── auxiliary/
-├── cultivators/
-│   ├── plant-farm/
+├── farm/
+│   ├── plant/
 │   │   ├── tuber/          # 0x02
 │   │   ├── root/           # 0x03
 │   │   ├── stem/           # 0x04
 │   │   ├── leaf/           # 0x05
 │   │   ├── flower/         # 0x06
 │   │   └── fruit/          # 0x07
-│   ├── algae-farm/
+│   ├── algae/
 │   │   ├── spiral/         # 0x10
 │   │   └── chlorella/      # 0x11
-│   ├── fungi-farm/
+│   ├── fungi/
 │   │   ├── mushroom/       # 0x20
 │   │   └── fungus/         # 0x21
-│   ├── animal-farm/
+│   ├── animal/
 │   │   ├── bee/            # 0x30
 │   │   └── earthworm/      # 0x31
-│   └── insect-farm/
+│   └── insect/
 │       ├── cricket/        # 0x40
 │       └── mealworm/       # 0x41
 ├── shared/
@@ -85,17 +85,17 @@ shennong-platform/
 | Device | Components | Dev | Cost |
 |--------|-----------|-----|------|
 | Gateway | WBR3 + ZS3L | TuyaOS | ¥25 |
-| Cultivator | LK Shield + ZS3L | PlatformIO | ¥20 |
+| Farm Device | LK Shield + ZS3L | PlatformIO | ¥20 |
 
 ## Communication
 
 ```
-Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Cultivator
+Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Farm Device
 ```
 
 ## Development
 
 ```bash
-cd cultivators/plant-farm/tuber
+cd farm/plant/tuber
 pio run
 ```
