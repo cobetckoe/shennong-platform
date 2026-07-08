@@ -2,100 +2,61 @@
 
 Distributed AI agriculture production system.
 
-## Architecture
-
-- Gateway: WBR3 + ZS3L (Zigbee bridge)
-- Farm: LK Shield + ZS3L (local control)
-- Auxiliary: Standalone devices
-
 ## Project Structure
 
 ```
 shennong-platform/
-├── gateway/
+├── gateway/              # Gateway device
 │   └── wbr3/
-├── auxiliary/
-├── farm/
+├── auxiliary/            # Standalone device
+├── subdevice/            # Sub device (via gateway)
 │   ├── plant/
-│   │   ├── tuber/          # 0x02
-│   │   ├── root/           # 0x03
-│   │   ├── stem/           # 0x04
-│   │   ├── leaf/           # 0x05
-│   │   ├── flower/         # 0x06
-│   │   └── fruit/          # 0x07
+│   │   ├── tuber/       # 0x02
+│   │   ├── root/        # 0x03
+│   │   ├── stem/        # 0x04
+│   │   ├── leaf/        # 0x05
+│   │   ├── flower/      # 0x06
+│   │   └── fruit/       # 0x07
 │   ├── algae/
-│   │   ├── spiral/         # 0x10
-│   │   └── chlorella/      # 0x11
+│   │   ├── spiral/      # 0x10
+│   │   └── chlorella/   # 0x11
 │   ├── fungi/
-│   │   ├── mushroom/       # 0x20
-│   │   └── fungus/         # 0x21
+│   │   ├── mushroom/    # 0x20
+│   │   └── fungus/      # 0x21
 │   ├── animal/
-│   │   ├── bee/            # 0x30
-│   │   └── earthworm/      # 0x31
+│   │   ├── bee/         # 0x30
+│   │   └── earthworm/   # 0x31
 │   └── insect/
-│       ├── cricket/        # 0x40
-│       └── mealworm/       # 0x41
+│       ├── cricket/     # 0x40
+│       └── mealworm/    # 0x41
 ├── shared/
 └── docs/
 ```
 
-## Device List
+## Device Types
 
-### Plant
-
-| Device | ID | Part | Crops |
-|--------|-----|------|-------|
-| tuber | 0x02 | Tuber | Potato |
-| root | 0x03 | Root | Radish |
-| stem | 0x04 | Stem | Celery |
-| leaf | 0x05 | Leaf | Spinach |
-| flower | 0x06 | Flower | Broccoli |
-| fruit | 0x07 | Fruit | Tomato |
-
-### Algae
-
-| Device | ID | Name |
-|--------|-----|------|
-| spiral | 0x10 | Spirulina |
-| chlorella | 0x11 | Chlorella |
-
-### Fungi
-
-| Device | ID | Name |
-|--------|-----|------|
-| mushroom | 0x20 | Mushroom |
-| fungus | 0x21 | Tremella |
-
-### Animal
-
-| Device | ID | Name |
-|--------|-----|------|
-| bee | 0x30 | Bee |
-| earthworm | 0x31 | Earthworm |
-
-### Insect
-
-| Device | ID | Name |
-|--------|-----|------|
-| cricket | 0x40 | Cricket |
-| mealworm | 0x41 | Mealworm |
+| Type | Directory | Connection |
+|------|-----------|------------|
+| Gateway | gateway/ | WiFi + Zigbee |
+| Auxiliary | auxiliary/ | Standalone |
+| Sub Device | subdevice/ | Zigbee |
 
 ## Hardware
 
 | Device | Components | Dev | Cost |
 |--------|-----------|-----|------|
 | Gateway | WBR3 + ZS3L | TuyaOS | ¥25 |
-| Farm Device | LK Shield + ZS3L | PlatformIO | ¥20 |
+| Sub Device | LK Shield + ZS3L | PlatformIO | ¥20 |
 
 ## Communication
 
 ```
-Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Farm Device
+Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Sub Device
 ```
 
 ## Development
 
 ```bash
-cd farm/plant/tuber
+cd subdevice/plant/tuber
 pio run
 ```
