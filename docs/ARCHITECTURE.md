@@ -18,10 +18,10 @@ Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Sub Device
 
 ## Hardware
 
-| Device | Components | SDK | Cost |
-|--------|-----------|-----|------|
-| Gateway | WBR3 + ZS3L | TuyaOS | ¥25 |
-| Sub Device | LK Shield + ZS3L | PlatformIO | ¥20 |
+| Device | Components | SDK |
+|--------|-----------|-----|
+| Gateway | WBR3 + ZS3L | TuyaOS |
+| Sub Device | LK Shield + ZS3L | PlatformIO |
 
 ## Communication Protocol
 
