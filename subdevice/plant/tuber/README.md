@@ -1,74 +1,74 @@
-# Tuber Planter
+# 块茎种植机
 
-## Overview
+## 概述
 
-Sub device for tuber crops (potato, sweet potato).
+子设备，用于块茎类作物（土豆、红薯）。
 
-## Hardware
+## 硬件
 
-- LK Shield (STM32F103C8)
-- ZS3L module (Zigbee)
-- Sensors: Temperature, Humidity, Light, pH
-- Actuators: Spray pump, Fan, LED
+- 立创地阔星 (STM32F103C8)
+- ZS3L模组 (Zigbee)
+- 传感器：温度、湿度、光照、pH
+- 执行器：喷雾泵、风扇、LED
 
-## Development Environment
+## 开发环境
 
-### Requirements
+### 要求
 - PlatformIO
-- ST-Link debugger
-- Arduino framework
+- ST-Link调试器
+- Arduino框架
 
-### Setup
-1. Install PlatformIO
-2. Open project folder
-3. Build and flash
+### 配置
+1. 安装PlatformIO
+2. 打开工程文件夹
+3. 编译烧录
 
-## Configuration
+## 配置
 
-### Device ID
-Modify in `src/main.cpp`:
+### 设备ID
+修改 `src/main.cpp` 中的配置：
 ```c
 #define DEVICE_ID       0x02
 #define DEVICE_TYPE     0x02
 ```
 
-### Pin Connection
+### 引脚连接
 - ZS3L TX → PA3 (USART2_RX)
 - ZS3L RX → PA2 (USART2_TX)
 - ZS3L VCC → 3.3V
 - ZS3L GND → GND
-- Spray pump → PB0
-- Fan → PB1
+- 喷雾泵 → PB0
+- 风扇 → PB1
 - LED → PB2
 
-## Build
+## 编译
 
 ```bash
 pio run
 ```
 
-## Flash
+## 烧录
 
 ```bash
 pio run -t upload
 ```
 
-## Debug
+## 调试
 
 ```bash
 pio device monitor --baud 115200
 ```
 
-## Control Parameters
+## 控制参数
 
-| Parameter | Default | Range |
-|-----------|---------|-------|
-| Temperature high | 28°C | 20-40°C |
-| Temperature low | 15°C | 5-25°C |
-| Humidity high | 75% | 50-100% |
-| Humidity low | 50% | 30-80% |
+| 参数 | 默认值 | 范围 |
+|------|--------|------|
+| 温度上限 | 28°C | 20-40°C |
+| 温度下限 | 15°C | 5-25°C |
+| 湿度上限 | 75% | 50-100% |
+| 湿度下限 | 50% | 30-80% |
 
-## References
+## 参考
 
 - [PlatformIO](https://platformio.org/)
 - [STM32 Arduino](https://docs.platformio.org/en/latest/boards/ststm32/genericSTM32F103C8.html)

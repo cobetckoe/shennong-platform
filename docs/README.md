@@ -1,56 +1,56 @@
-# Shennong Platform Documentation
+# 神农平台文档
 
-## Overview
+## 概述
 
-Distributed AI agriculture production system using Tuya IoT platform.
+基于涂鸦IoT平台的分布式AI农业生产系统。
 
-## Architecture
+## 架构
 
-### System Topology
+### 系统拓扑
 ```
-Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Sub Device
-                                ←Zigbee→ Sub Device
-                                ←Zigbee→ Sub Device
+涂鸦云 ←WiFi→ 网关 ←Zigbee→ 子设备
+                           ←Zigbee→ 子设备
+                           ←Zigbee→ 子设备
 ```
 
-### Device Types
-| Type | Directory | Connection | Function |
-|------|-----------|------------|----------|
-| Gateway | gateway/ | WiFi + Zigbee | Bridge to cloud |
-| Auxiliary | auxiliary/ | Standalone | Independent operation |
-| Sub Device | subdevice/ | Zigbee | Local control |
+### 设备类型
+| 类型 | 目录 | 连接方式 | 功能 |
+|------|------|---------|------|
+| 网关 | gateway/ | WiFi + Zigbee | 云端桥接 |
+| 独立设备 | auxiliary/ | 独立运行 | 独立控制 |
+| 子设备 | subdevice/ | Zigbee | 本地控制 |
 
-### Hardware
-| Device | Components | SDK | Cost |
-|--------|-----------|-----|------|
-| Gateway | WBR3 + ZS3L | TuyaOS | ¥25 |
-| Sub Device | LK Shield + ZS3L | PlatformIO | ¥20 |
+### 硬件
+| 设备 | 组成 | 开发方式 | 成本 |
+|------|------|---------|------|
+| 网关 | WBR3 + ZS3L | TuyaOS | ¥25 |
+| 子设备 | 立创地阔星 + ZS3L | PlatformIO | ¥20 |
 
-## Development
+## 开发
 
-### Gateway (TuyaOS)
-1. Install Tuya Wind IDE
-2. Download gateway development kit
-3. Configure product information
-4. Build and flash
+### 网关 (TuyaOS)
+1. 安装Tuya Wind IDE
+2. 下载网关开发框架
+3. 配置产品信息
+4. 编译烧录
 
-### Sub Device (PlatformIO)
-1. Install PlatformIO
-2. Configure device ID
-3. Implement sensor reading
-4. Build and flash
+### 子设备 (PlatformIO)
+1. 安装PlatformIO
+2. 配置设备ID
+3. 实现传感器读取
+4. 编译烧录
 
-## Communication Protocol
+## 通信协议
 
-### Command Types
-| Command | Direction | Description |
-|---------|-----------|-------------|
-| 0x01 | Sub → Gateway | Heartbeat |
-| 0x02 | Bidirectional | Sensor data / Control rule |
+### 命令类型
+| 命令 | 方向 | 说明 |
+|------|------|------|
+| 0x01 | 子设备→网关 | 心跳 |
+| 0x02 | 双向 | 传感器数据/控制规则 |
 
-### Data Structures
+### 数据结构
 ```c
-// Control Rule
+// 控制规则
 typedef struct {
     uint8_t rule_id;
     uint8_t device_type;
@@ -59,50 +59,50 @@ typedef struct {
     uint8_t spray, fan, led;
 } __attribute__((packed)) control_rule_t;
 
-// Sensor Data
+// 传感器数据
 typedef struct {
     float temperature, humidity, light, ph;
 } __attribute__((packed)) sensor_data_t;
 ```
 
-## Device List
+## 设备列表
 
-### Plant (edible parts)
-| Device | ID | Part | Crops |
-|--------|-----|------|-------|
-| tuber | 0x02 | Tuber | Potato |
-| root | 0x03 | Root | Radish |
-| stem | 0x04 | Stem | Celery |
-| leaf | 0x05 | Leaf | Spinach |
-| flower | 0x06 | Flower | Broccoli |
-| fruit | 0x07 | Fruit | Tomato |
+### 植物 (按可食用部位)
+| 设备 | ID | 部位 | 作物 |
+|------|-----|------|------|
+| tuber | 0x02 | 块茎 | 土豆 |
+| root | 0x03 | 根 | 萝卜 |
+| stem | 0x04 | 茎 | 芹菜 |
+| leaf | 0x05 | 叶 | 菠菜 |
+| flower | 0x06 | 花 | 花椰菜 |
+| fruit | 0x07 | 果实 | 番茄 |
 
-### Algae
-| Device | ID | Name |
-|--------|-----|------|
-| spiral | 0x10 | Spirulina |
-| chlorella | 0x11 | Chlorella |
+### 藻类
+| 设备 | ID | 名称 |
+|------|-----|------|
+| spiral | 0x10 | 螺旋藻 |
+| chlorella | 0x11 | 小球藻 |
 
-### Fungi
-| Device | ID | Name |
-|--------|-----|------|
-| mushroom | 0x20 | Mushroom |
-| fungus | 0x21 | Tremella |
+### 真菌
+| 设备 | ID | 名称 |
+|------|-----|------|
+| mushroom | 0x20 | 蘑菇 |
+| fungus | 0x21 | 银耳 |
 
-### Animal
-| Device | ID | Name |
-|--------|-----|------|
-| bee | 0x30 | Bee |
-| earthworm | 0x31 | Earthworm |
+### 动物
+| 设备 | ID | 名称 |
+|------|-----|------|
+| bee | 0x30 | 蜜蜂 |
+| earthworm | 0x31 | 蚯蚓 |
 
-### Insect
-| Device | ID | Name |
-|--------|-----|------|
-| cricket | 0x40 | Cricket |
-| mealworm | 0x41 | Mealworm |
+### 昆虫
+| 设备 | ID | 名称 |
+|------|-----|------|
+| cricket | 0x40 | 蟋蟀 |
+| mealworm | 0x41 | 面包虫 |
 
-## References
+## 参考
 
-- [Tuya Developer Platform](https://developer.tuya.com/)
-- [TuyaOS Documentation](https://developer.tuya.com/cn/docs/iot-device-dev)
+- [涂鸦开发者平台](https://developer.tuya.com/)
+- [涂鸦IoT文档](https://developer.tuya.com/cn/docs/iot-device-dev)
 - [PlatformIO](https://platformio.org/)
