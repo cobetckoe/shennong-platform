@@ -12,52 +12,52 @@ Distributed AI agriculture production system.
 
 ```
 shennong-platform/
-├── gateway/                      # Gateway
-│   └── wbr3/                   # WBR3 gateway (TuyaOS)
-├── auxiliary/                    # Standalone devices
-├── cultivators/                  # Cultivators
-│   ├── plant-farm/             # Plant
-│   │   ├── tuber-planter/     # Tuber (0x02)
-│   │   ├── root-planter/      # Root (0x03)
-│   │   ├── stem-planter/      # Stem (0x04)
-│   │   ├── leaf-planter/      # Leaf (0x05)
-│   │   ├── flower-planter/    # Flower (0x06)
-│   │   └── fruit-planter/     # Fruit (0x07)
-│   ├── algae-farm/              # Algae
-│   │   ├── spiral-algae/      # Spirulina (0x10)
-│   │   └── chlorella-algae/   # Chlorella (0x11)
-│   ├── fungi-farm/              # Fungi
-│   │   ├── mushroom/          # Mushroom (0x20)
-│   │   └── fungus/            # Tremella (0x21)
-│   ├── animal-farm/             # Animal
-│   │   ├── bee/               # Bee (0x30)
-│   │   └── earthworm/         # Earthworm (0x31)
-│   └── insect-farm/             # Insect
-│       ├── cricket/           # Cricket (0x40)
-│       └── mealworm/          # Mealworm (0x41)
-├── shared/                       # Shared
-└── docs/                         # Docs
+├── gateway/
+│   └── wbr3/
+├── auxiliary/
+├── cultivators/
+│   ├── plant-farm/
+│   │   ├── tuber/          # 0x02
+│   │   ├── root/           # 0x03
+│   │   ├── stem/           # 0x04
+│   │   ├── leaf/           # 0x05
+│   │   ├── flower/         # 0x06
+│   │   └── fruit/          # 0x07
+│   ├── algae-farm/
+│   │   ├── spiral/         # 0x10
+│   │   └── chlorella/      # 0x11
+│   ├── fungi-farm/
+│   │   ├── mushroom/       # 0x20
+│   │   └── fungus/         # 0x21
+│   ├── animal-farm/
+│   │   ├── bee/            # 0x30
+│   │   └── earthworm/      # 0x31
+│   └── insect-farm/
+│       ├── cricket/        # 0x40
+│       └── mealworm/       # 0x41
+├── shared/
+└── docs/
 ```
 
 ## Device List
 
-### Plant (edible parts)
+### Plant
 
 | Device | ID | Part | Crops |
 |--------|-----|------|-------|
-| tuber-planter | 0x02 | Tuber | Potato |
-| root-planter | 0x03 | Root | Radish |
-| stem-planter | 0x04 | Stem | Celery |
-| leaf-planter | 0x05 | Leaf | Spinach |
-| flower-planter | 0x06 | Flower | Broccoli |
-| fruit-planter | 0x07 | Fruit | Tomato |
+| tuber | 0x02 | Tuber | Potato |
+| root | 0x03 | Root | Radish |
+| stem | 0x04 | Stem | Celery |
+| leaf | 0x05 | Leaf | Spinach |
+| flower | 0x06 | Flower | Broccoli |
+| fruit | 0x07 | Fruit | Tomato |
 
 ### Algae
 
 | Device | ID | Name |
 |--------|-----|------|
-| spiral-algae | 0x10 | Spirulina |
-| chlorella-algae | 0x11 | Chlorella |
+| spiral | 0x10 | Spirulina |
+| chlorella | 0x11 | Chlorella |
 
 ### Fungi
 
@@ -96,6 +96,6 @@ Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Cultivator
 ## Development
 
 ```bash
-cd cultivators/plant-farm/tuber-planter
+cd cultivators/plant-farm/tuber
 pio run
 ```
