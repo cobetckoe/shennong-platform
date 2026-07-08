@@ -16,7 +16,7 @@ shennong-platform/
 │   └── wbr3/                   # WBR3 gateway (TuyaOS)
 ├── auxiliary/                    # Standalone devices
 ├── cultivators/                  # Cultivators
-│   ├── plants/                 # Plants
+│   ├── plant-farm/             # Plant
 │   │   ├── tuber-planter/     # Tuber (0x02)
 │   │   ├── root-planter/      # Root (0x03)
 │   │   ├── stem-planter/      # Stem (0x04)
@@ -41,7 +41,7 @@ shennong-platform/
 
 ## Device List
 
-### Plants (edible parts)
+### Plant (edible parts)
 
 | Device | ID | Part | Crops |
 |--------|-----|------|-------|
@@ -96,6 +96,6 @@ Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Cultivator
 ## Development
 
 ```bash
-cd cultivators/plants/tuber-planter
+cd cultivators/plant-farm/tuber-planter
 pio run
 ```
