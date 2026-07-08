@@ -12,36 +12,36 @@
 
 ```
 shennong-platform/
-├── gateway-device/            # 网关设备
+├── gateway-device/                # 网关设备
 │   └── wbr3/
-├── auxiliary/                 # 独立设备
-├── cultivators/               # 养殖设备（按生物分类）
-│   ├── plant/               # 植物界
-│   │   ├── tuber-planter/   # 块茎(0x02)
-│   │   ├── root-planter/    # 根(0x03)
-│   │   ├── stem-planter/    # 茎(0x04)
-│   │   ├── leaf-planter/    # 叶(0x05)
-│   │   ├── flower-planter/  # 花(0x06)
-│   │   └── fruit-planter/   # 果实(0x07)
-│   ├── algae/               # 藻类
-│   │   ├── spiral-planter/  # 螺旋藻(0x10)
-│   │   └── chlorella-planter/ # 小球藻(0x11)
-│   ├── fungi/               # 真菌界
-│   │   ├── mushroom-planter/ # 蘑菇(0x20)
-│   │   └── fungus-planter/  # 银耳/木耳(0x21)
-│   ├── animal/              # 动物界
-│   │   ├── bee-hive/        # 蜜蜂(0x30)
-│   │   └── earthworm-farm/  # 蚯蚓(0x31)
-│   └── insect/              # 昆虫纲
-│       ├── cricket-farm/    # 蟋蟀(0x40)
-│       └── mealworm-farm/   # 面包虫(0x41)
+├── auxiliary/                     # 独立设备
+├── cultivators/                   # 养殖设备
+│   ├── plants/                  # 植物
+│   │   ├── tuber-planter/       # 块茎(0x02)
+│   │   ├── root-planter/        # 根(0x03)
+│   │   ├── stem-planter/        # 茎(0x04)
+│   │   ├── leaf-planter/        # 叶(0x05)
+│   │   ├── flower-planter/      # 花(0x06)
+│   │   └── fruit-planter/       # 果实(0x07)
+│   ├── algae-farm/               # 藻类
+│   │   ├── spiral-algae/        # 螺旋藻(0x10)
+│   │   └── chlorella-algae/     # 小球藻(0x11)
+│   ├── fungi-farm/               # 真菌
+│   │   ├── mushroom/            # 蘑菇(0x20)
+│   │   └── fungus/              # 银耳/木耳(0x21)
+│   ├── animal-farm/              # 动物
+│   │   ├── bee/                 # 蜜蜂(0x30)
+│   │   └── earthworm/           # 蚯蚓(0x31)
+│   └── insect-farm/              # 昆虫
+│       ├── cricket/             # 蟋蟀(0x40)
+│       └── mealworm/            # 面包虫(0x41)
 ├── shared/
 └── docs/
 ```
 
 ## 设备列表
 
-### 植物界 - 按可食用部位
+### 植物 - 按可食用部位
 
 | 设备 | 类型ID | 可食用部位 | 代表作物 |
 |------|--------|-----------|---------|
@@ -56,29 +56,29 @@ shennong-platform/
 
 | 设备 | 类型ID | 说明 |
 |------|--------|------|
-| spiral-planter | 0x10 | 螺旋藻 |
-| chlorella-planter | 0x11 | 小球藻 |
+| spiral-algae | 0x10 | 螺旋藻 |
+| chlorella-algae | 0x11 | 小球藻 |
 
-### 真菌界
-
-| 设备 | 类型ID | 说明 |
-|------|--------|------|
-| mushroom-planter | 0x20 | 蘑菇 |
-| fungus-planter | 0x21 | 银耳、木耳 |
-
-### 动物界
+### 真菌
 
 | 设备 | 类型ID | 说明 |
 |------|--------|------|
-| bee-hive | 0x30 | 蜜蜂养殖 |
-| earthworm-farm | 0x31 | 蚯蚓养殖 |
+| mushroom | 0x20 | 蘑菇 |
+| fungus | 0x21 | 银耳、木耳 |
 
-### 昆虫纲
+### 动物
 
 | 设备 | 类型ID | 说明 |
 |------|--------|------|
-| cricket-farm | 0x40 | 蟋蟀养殖 |
-| mealworm-farm | 0x41 | 面包虫养殖 |
+| bee | 0x30 | 蜜蜂养殖 |
+| earthworm | 0x31 | 蚯蚓养殖 |
+
+### 昆虫
+
+| 设备 | 类型ID | 说明 |
+|------|--------|------|
+| cricket | 0x40 | 蟋蟀养殖 |
+| mealworm | 0x41 | 面包虫养殖 |
 
 ## 硬件方案
 
@@ -96,7 +96,7 @@ shennong-platform/
 ## 开发
 
 ```bash
-cd cultivators/plant/tuber-planter
+cd cultivators/plants/tuber-planter
 pio run
 ```
 
