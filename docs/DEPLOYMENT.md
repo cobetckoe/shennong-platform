@@ -1,24 +1,81 @@
-# 部署指南
+# Deployment
 
-## 网关部署
+## Gateway
 
-1. 涂鸦平台创建产品
-2. Tuya Wind IDE编译
-3. 烧录WBR3
-4. 连接ZS3L
+### Requirements
+- WBR3 development board
+- Tuya Wind IDE
+- TuyaOS SDK
+- Tuya developer account
 
-## 子机部署
+### Setup
+1. Create product on Tuya platform
+2. Open project with Tuya Wind IDE
+3. Configure product key/secret
+4. Build and flash
+5. Connect ZS3L to UART
 
-1. 复制 `shared/sub_device_template.c` 到设备目录
-2. 修改 DEVICE_ID 和 DEVICE_TYPE
-3. 修改传感器读取逻辑
-4. STM32CubeIDE编译烧录
+### Pin Connection
+- ZS3L TX → WBR3 GPIO4
+- ZS3L RX → WBR3 GPIO5
+- ZS3L VCC → 3.3V
+- ZS3L GND → GND
 
-## 设备ID分配
+## Sub Device
 
-| 设备类型 | ID范围 | 说明 |
-|---------|--------|------|
-| tuber-planter | 0x02-0x0F | 块茎种植机 |
-| algae-planter | 0x10-0x1F | 藻类种植机 |
-| leaf-planter | 0x20-0x2F | 叶菜种植机 |
-| fungi-planter | 0x30-0x3F | 菌类种植机 |
+### Requirements
+- LK Shield (STM32F103)
+- PlatformIO
+- ZS3L module
+
+### Setup
+1. Copy template to device directory
+2. Modify DEVICE_ID and DEVICE_TYPE
+3. Implement sensor reading
+4. Build and flash
+
+### Pin Connection
+- ZS3L TX → PA3 (USART2_RX)
+- ZS3L RX → PA2 (USART2_TX)
+- ZS3L VCC → 3.3V
+- ZS3L GND → GND
+- Spray pump → PB0
+- Fan → PB1
+- LED → PB2
+
+## Device ID Allocation
+
+| Device Type | ID Range |
+|-------------|----------|
+| tuber | 0x02-0x02 |
+| root | 0x03-0x03 |
+| stem | 0x04-0x04 |
+| leaf | 0x05-0x05 |
+| flower | 0x06-0x06 |
+| fruit | 0x07-0x07 |
+| spiral | 0x10-0x10 |
+| chlorella | 0x11-0x11 |
+| mushroom | 0x20-0x20 |
+| fungus | 0x21-0x21 |
+| bee | 0x30-0x30 |
+| earthworm | 0x31-0x31 |
+| cricket | 0x40-0x40 |
+| mealworm | 0x41-0x41 |
+
+## Testing
+
+### Gateway
+- Check WiFi connection
+- Check Tuya Cloud connection
+- Check Zigbee communication
+
+### Sub Device
+- Check heartbeat sending
+- Check sensor data collection
+- Check control execution
+
+### End-to-End
+- Sub device reports to cloud
+- Cloud sends rules to gateway
+- Gateway forwards to sub device
+- Sub device executes control

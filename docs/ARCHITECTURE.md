@@ -1,43 +1,61 @@
-# 架构文档
+# Architecture
 
-## 系统拓扑
+## System Topology
 
 ```
-涂鸦云 ←WiFi→ 网关设备 ←Zigbee→ 养殖设备
-                                 独立设备(不接入网关)
+Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Sub Device
+                                ←Zigbee→ Sub Device
+                                ←Zigbee→ Sub Device
 ```
 
-## 设备分类
+## Device Types
 
-| 分类 | 目录 | 说明 |
-|------|------|------|
-| 网关设备 | gateway-device/ | WBR3+ZS3L |
-| 养殖设备 | cultivators/ | 立创地阔星+ZS3L |
-| 独立设备 | auxiliary/ | 不接入网关 |
-| 共享库 | shared/ | 协议和模板 |
+| Type | Directory | Connection | Function |
+|------|-----------|------------|----------|
+| Gateway | gateway/ | WiFi + Zigbee | Bridge to cloud |
+| Auxiliary | auxiliary/ | Standalone | Independent operation |
+| Sub Device | subdevice/ | Zigbee | Local control |
 
-## 养殖设备列表
+## Hardware
 
-| 设备 | 类型ID | 可食用部位 |
-|------|--------|-----------|
-| tuber-planter | 0x02 | 块茎 |
-| algae-planter | 0x03 | 全株 |
-| leaf-planter | 0x04 | 叶子 |
-| fungi-planter | 0x05 | 子实体 |
-| fruit-planter | 0x06 | 果实 |
-| root-planter | 0x07 | 根 |
-| flower-planter | 0x08 | 花 |
+| Device | Components | SDK | Cost |
+|--------|-----------|-----|------|
+| Gateway | WBR3 + ZS3L | TuyaOS | ¥25 |
+| Sub Device | LK Shield + ZS3L | PlatformIO | ¥20 |
 
-## 通信协议
+## Communication Protocol
 
-| 命令 | 方向 | 说明 |
-|------|------|------|
-| 0x01 | 子机→网关 | 心跳 |
-| 0x02 | 双向 | 传感器数据/控制规则 |
+| Command | Direction | Description |
+|---------|-----------|-------------|
+| 0x01 | Sub → Gateway | Heartbeat |
+| 0x02 | Bidirectional | Sensor data / Control rule |
 
-## 物模型
+## Control Rule Structure
 
-| DP | 名称 | 方向 |
-|----|------|------|
-| 1 | 传感器数据 | 上报 |
-| 2 | 控制规则 | 下发 |
+```c
+typedef struct {
+    uint8_t rule_id;
+    uint8_t device_type;
+    float temp_high, temp_low;
+    float humidity_high, humidity_low;
+    uint8_t spray, fan, led;
+} __attribute__((packed)) control_rule_t;
+```
+
+## Sensor Data Structure
+
+```c
+typedef struct {
+    float temperature, humidity, light, ph;
+} __attribute__((packed)) sensor_data_t;
+```
+
+## Data Flow
+
+1. Sub device collects sensor data
+2. Sub device sends data to gateway via Zigbee
+3. Gateway reports data to Tuya Cloud
+4. Tuya Cloud analyzes and generates rules
+5. Tuya Cloud sends rules to gateway
+6. Gateway forwards rules to sub devices
+7. Sub device executes control locally
