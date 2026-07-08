@@ -1,106 +1,101 @@
-# 神农平台（Shennong Platform）
+# Shennong Platform
 
-基于城市种植的分布式AI农业生产系统。
+Distributed AI agriculture production system.
 
-## 架构
+## Architecture
 
-- 网关设备：WBR3 + ZS3L（Zigbee透传）
-- 养殖设备：立创地阔星 + ZS3L，通过网关管理
-- 独立设备：不接入网关，独立运行
+- Gateway: WBR3 + ZS3L (Zigbee bridge)
+- Cultivators: LK Shield + ZS3L (local control)
+- Auxiliary: Standalone devices
 
-## 项目结构
+## Project Structure
 
 ```
 shennong-platform/
-├── gateway-device/                # 网关设备
-│   └── wbr3/
-├── auxiliary/                     # 独立设备
-├── cultivators/                   # 养殖设备
-│   ├── plants/                  # 植物
-│   │   ├── tuber-planter/       # 块茎(0x02)
-│   │   ├── root-planter/        # 根(0x03)
-│   │   ├── stem-planter/        # 茎(0x04)
-│   │   ├── leaf-planter/        # 叶(0x05)
-│   │   ├── flower-planter/      # 花(0x06)
-│   │   └── fruit-planter/       # 果实(0x07)
-│   ├── algae-farm/               # 藻类
-│   │   ├── spiral-algae/        # 螺旋藻(0x10)
-│   │   └── chlorella-algae/     # 小球藻(0x11)
-│   ├── fungi-farm/               # 真菌
-│   │   ├── mushroom/            # 蘑菇(0x20)
-│   │   └── fungus/              # 银耳/木耳(0x21)
-│   ├── animal-farm/              # 动物
-│   │   ├── bee/                 # 蜜蜂(0x30)
-│   │   └── earthworm/           # 蚯蚓(0x31)
-│   └── insect-farm/              # 昆虫
-│       ├── cricket/             # 蟋蟀(0x40)
-│       └── mealworm/            # 面包虫(0x41)
-├── shared/
-└── docs/
+├── gateway/                      # Gateway
+│   └── wbr3/                   # WBR3 gateway (TuyaOS)
+├── auxiliary/                    # Standalone devices
+├── cultivators/                  # Cultivators
+│   ├── plants/                 # Plants
+│   │   ├── tuber-planter/     # Tuber (0x02)
+│   │   ├── root-planter/      # Root (0x03)
+│   │   ├── stem-planter/      # Stem (0x04)
+│   │   ├── leaf-planter/      # Leaf (0x05)
+│   │   ├── flower-planter/    # Flower (0x06)
+│   │   └── fruit-planter/     # Fruit (0x07)
+│   ├── algae-farm/              # Algae
+│   │   ├── spiral-algae/      # Spirulina (0x10)
+│   │   └── chlorella-algae/   # Chlorella (0x11)
+│   ├── fungi-farm/              # Fungi
+│   │   ├── mushroom/          # Mushroom (0x20)
+│   │   └── fungus/            # Tremella (0x21)
+│   ├── animal-farm/             # Animal
+│   │   ├── bee/               # Bee (0x30)
+│   │   └── earthworm/         # Earthworm (0x31)
+│   └── insect-farm/             # Insect
+│       ├── cricket/           # Cricket (0x40)
+│       └── mealworm/          # Mealworm (0x41)
+├── shared/                       # Shared
+└── docs/                         # Docs
 ```
 
-## 设备列表
+## Device List
 
-### 植物 - 按可食用部位
+### Plants (edible parts)
 
-| 设备 | 类型ID | 可食用部位 | 代表作物 |
-|------|--------|-----------|---------|
-| tuber-planter | 0x02 | 块茎 | 土豆、红薯 |
-| root-planter | 0x03 | 根 | 萝卜、胡萝卜 |
-| stem-planter | 0x04 | 茎 | 芹菜、莴笋 |
-| leaf-planter | 0x05 | 叶 | 菠菜、生菜 |
-| flower-planter | 0x06 | 花 | 花椰菜、西兰花 |
-| fruit-planter | 0x07 | 果实 | 番茄、黄瓜 |
+| Device | ID | Part | Crops |
+|--------|-----|------|-------|
+| tuber-planter | 0x02 | Tuber | Potato |
+| root-planter | 0x03 | Root | Radish |
+| stem-planter | 0x04 | Stem | Celery |
+| leaf-planter | 0x05 | Leaf | Spinach |
+| flower-planter | 0x06 | Flower | Broccoli |
+| fruit-planter | 0x07 | Fruit | Tomato |
 
-### 藻类
+### Algae
 
-| 设备 | 类型ID | 说明 |
-|------|--------|------|
-| spiral-algae | 0x10 | 螺旋藻 |
-| chlorella-algae | 0x11 | 小球藻 |
+| Device | ID | Name |
+|--------|-----|------|
+| spiral-algae | 0x10 | Spirulina |
+| chlorella-algae | 0x11 | Chlorella |
 
-### 真菌
+### Fungi
 
-| 设备 | 类型ID | 说明 |
-|------|--------|------|
-| mushroom | 0x20 | 蘑菇 |
-| fungus | 0x21 | 银耳、木耳 |
+| Device | ID | Name |
+|--------|-----|------|
+| mushroom | 0x20 | Mushroom |
+| fungus | 0x21 | Tremella |
 
-### 动物
+### Animal
 
-| 设备 | 类型ID | 说明 |
-|------|--------|------|
-| bee | 0x30 | 蜜蜂养殖 |
-| earthworm | 0x31 | 蚯蚓养殖 |
+| Device | ID | Name |
+|--------|-----|------|
+| bee | 0x30 | Bee |
+| earthworm | 0x31 | Earthworm |
 
-### 昆虫
+### Insect
 
-| 设备 | 类型ID | 说明 |
-|------|--------|------|
-| cricket | 0x40 | 蟋蟀养殖 |
-| mealworm | 0x41 | 面包虫养殖 |
+| Device | ID | Name |
+|--------|-----|------|
+| cricket | 0x40 | Cricket |
+| mealworm | 0x41 | Mealworm |
 
-## 硬件方案
+## Hardware
 
-| 设备 | 组成 | 开发方式 | 成本 |
-|------|------|---------|------|
-| 网关设备 | WBR3 + ZS3L | TuyaOS | ¥25 |
-| 养殖设备 | 立创地阔星 + ZS3L | PlatformIO | ¥20 |
+| Device | Components | Dev | Cost |
+|--------|-----------|-----|------|
+| Gateway | WBR3 + ZS3L | TuyaOS | ¥25 |
+| Cultivator | LK Shield + ZS3L | PlatformIO | ¥20 |
 
-## 通信链路
+## Communication
 
 ```
-涂鸦云 ←WiFi→ WBR3网关设备 ←Zigbee→ 养殖设备
+Tuya Cloud ←WiFi→ Gateway ←Zigbee→ Cultivator
 ```
 
-## 开发
+## Development
 
 ```bash
 cd cultivators/plants/tuber-planter
 pio run
 ```
-
-## 文档
-
-- [架构文档](docs/ARCHITECTURE.md)
-- [部署指南](docs/DEPLOYMENT.md)
