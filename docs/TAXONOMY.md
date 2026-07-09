@@ -1,6 +1,8 @@
-# 物种生物分类数据
+# 物种生物分类数据 (云端参考)
 
 界 Kingdom → 门 Phylum → 纲 Class → 目 Order → 科 Family → 属 Genus → 种 Species
+
+> 此数据供云端匹配逻辑使用，设备端不包含。
 
 ## 植物
 

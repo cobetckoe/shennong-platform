@@ -5,8 +5,9 @@
 ### 设计原则
 
 - **云端智能**：所有物种参数、控制策略、实时调控在云端完成
-- **设备极简**：设备只做两件事 — 采集上报、接收执行
-- **通用模板**：所有设备使用同一份代码，仅 DEVICE_ID 和 DEVICE_TYPE 不同
+- **设备极简**：设备只做采集上报和接收执行
+- **分层解耦**：HAL → 驱动 → 设备，每层独立可替换
+- **配置驱动**：设备main.cpp只做硬件组装，不含底层逻辑
 
 ### 数据流
 
@@ -74,23 +75,13 @@ typedef struct {
 | 藻类 | water | 0x30 | 螺旋藻、小球藻 |
 | 昆虫 | feed | 0x40 | 蟋蟀、面包虫 |
 
-## 物种匹配规则
+## 运行时流程
 
-设备与物种的匹配数据存放在云端 (`species_match.h`)，包含三层：
-
-1. **物种环境需求** — 每个物种的温湿度、光照、pH范围
-2. **设备能力范围** — 每个设备能控制的参数范围
-3. **兼容性表** — 哪些物种可以在哪些设备上种植
-
-匹配逻辑：物种需求范围 ⊆ 设备能力范围，且设备具备所需执行器。
-
-### 运行时流程
-
-1. 设备启动，等待云端下发控制规则
+1. 设备启动，上报心跳，等待云端下发控制规则
 2. 用户在APP选择物种
-3. 云端根据 species_id 查物种表，生成控制参数
-4. 下发 control_rule_t (species_id 非0)
-5. 设备收到后执行控制
+3. 云端匹配物种需求与设备能力，生成控制参数
+4. 下发 control_rule_t (含 species_id)
+5. 设备收到后直接执行控制
 
 ## 网络方案
 
@@ -106,6 +97,35 @@ typedef struct {
 
 Zigbee mesh：2~3个网关 + 10~20个路由节点覆盖1000台终端。
 
+## 代码架构
+
+```
+shared/
+  hal/                          硬件抽象层 (换MCU只改这层)
+    gpio.h/c                    GPIO
+    uart.h/c                    UART
+    i2c.h/c                     I2C
+    adc.h/c                     ADC
+    delay.h/c                   延时
+  drivers/
+    sensor/                     传感器驱动 (可复用)
+      dht22.h/c                 温湿度
+      ds18b20.h/c               单总线温度
+      bh1750.h/c                I2C光照
+      hx711.h/c                 称重
+      ph_sensor.h/c             pH模拟量
+    actuator/                   执行器驱动 (可复用)
+      fan.h/c                   风扇
+      pump.h/c                  泵类
+      led.h/c                   LED补光
+      heater.h/c                加热片
+  common/
+    device.h/c                  设备框架 (主循环/通信)
+  protocols.h                   通信协议
+```
+
+设备main.cpp只做硬件组装：声明驱动实例 → 实现采集/控制 → 启动。
+
 ## 部署
 
 ### 网关
@@ -117,8 +137,8 @@ Zigbee mesh：2~3个网关 + 10~20个路由节点覆盖1000台终端。
 ### 子设备
 - 硬件：STM32F103 + ZS3L + 传感器 + 执行器
 - 开发：PlatformIO + Arduino
-- 步骤：选设备目录 → 改DEVICE_ID/DEVICE_TYPE → 实现read_sensors() → 编译烧录
-- 引脚：ZS3L TX→PA3, RX→PA2 | 喷雾→PB0, 风扇→PB1, LED→PB2
+- 步骤：选设备目录 → 配置引脚 → 编译烧录
+- 架构：HAL → 驱动 → 设备main.cpp组装
 
 ```bash
 cd subdevice/plant/rootcrop

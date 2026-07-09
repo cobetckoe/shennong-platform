@@ -1,29 +1,37 @@
 /**
- * Shennong Platform - WBR3 Gateway
- * 
- * Hardware: WBR3 (ESP32-C3) + ZS3L (Zigbee)
+ * 神农平台 - WBR3 网关
+ *
+ * 硬件: WBR3 (ESP32-C3) + ZS3L (Zigbee)
  * SDK: TuyaOS
- * Function: WiFi + Zigbee bridge
+ * 功能: WiFi + Zigbee 桥接
+ *
+ * 注意: rule_t 结构体必须与 shared/protocols.h 中的 control_rule_t 保持一致。
+ *       因为 TuyaOS 构建系统独立，此处单独定义，修改 protocols.h 时需同步更新。
  */
 
 #include "tuya_iot.h"
 #include <string.h>
 
-// Product config
+/* 产品配置 */
 #define PRODUCT_KEY     "your_product_key"
 #define PRODUCT_SECRET  "your_product_secret"
 #define DEVICE_NAME     "shennong_gateway"
 #define DEVICE_SECRET   "your_device_secret"
 
-// UART config (ZS3L)
+/* UART配置 (ZS3L) */
 #define ZIGBEE_UART     1
 #define ZIGBEE_BAUD     115200
 
-// DP IDs
+/* 涂鸦DP点 */
 #define DP_SENSOR       1
 #define DP_RULE         2
 
-// Control rule
+/* 协议命令 (与 shared/protocols.h 一致) */
+#define CMD_HEARTBEAT   0x01
+#define CMD_SENSOR_DATA 0x02
+#define CMD_CONTROL_RULE 0x02
+
+/* 控制规则 (必须与 shared/protocols.h 的 control_rule_t 一致) */
 typedef struct {
     uint8_t rule_id;
     uint8_t device_type;
@@ -33,7 +41,7 @@ typedef struct {
     uint8_t spray, fan, led;
 } __attribute__((packed)) rule_t;
 
-// Sub device
+/* 子设备信息 */
 typedef struct {
     uint8_t id;
     uint8_t addr[8];
@@ -46,13 +54,12 @@ static rule_t rules[16];
 static uint8_t device_count = 0;
 static uint8_t rule_count = 0;
 
-// DP command callback
+/* 云端下发控制规则 */
 static void dp_cmd_cb(uint8_t dp_id, uint8_t *data, uint16_t len) {
     if (dp_id == DP_RULE && len >= sizeof(rule_t)) {
         rule_t rule;
         memcpy(&rule, data, sizeof(rule));
-        
-        // Store rule
+
         bool found = false;
         for (int i = 0; i < rule_count; i++) {
             if (rules[i].rule_id == rule.rule_id) {
@@ -62,19 +69,18 @@ static void dp_cmd_cb(uint8_t dp_id, uint8_t *data, uint16_t len) {
             }
         }
         if (!found && rule_count < 16) rules[rule_count++] = rule;
-        
-        // Forward to devices
-        uint8_t tx[32] = {0x02};
+
+        uint8_t tx[32] = {CMD_CONTROL_RULE};
         memcpy(&tx[1], &rule, sizeof(rule));
         tuya_uart_send(ZIGBEE_UART, tx, sizeof(rule) + 1);
     }
 }
 
-// UART receive callback
+/* 设备上报数据 */
 static void uart_rx(uint8_t *data, uint16_t len) {
     if (len < 1) return;
-    
-    if (data[0] == 0x01 && len >= 9) {  // Heartbeat
+
+    if (data[0] == CMD_HEARTBEAT && len >= 9) {
         uint8_t id = data[1];
         bool found = false;
         for (int i = 0; i < device_count; i++) {
@@ -93,7 +99,7 @@ static void uart_rx(uint8_t *data, uint16_t len) {
             devices[device_count].last_heartbeat = tuya_system_get_millisecond();
             device_count++;
         }
-    } else if (data[0] == 0x02 && len >= 17) {  // Sensor data
+    } else if (data[0] == CMD_SENSOR_DATA && len >= 17) {
         tuya_iot_dp_report(DP_SENSOR, DP_TYPE_STRING, &data[1], len - 1);
     }
 }
@@ -108,17 +114,17 @@ void app_main(void) {
     };
     tuya_iot_init(&config);
     tuya_uart_init(ZIGBEE_UART, ZIGBEE_BAUD, uart_rx);
-    
+
     while (1) {
         tuya_iot_loop();
-        
+
         uint32_t now = tuya_system_get_millisecond();
         for (int i = 0; i < device_count; i++) {
             if (devices[i].online && (now - devices[i].last_heartbeat > 60000)) {
                 devices[i].online = false;
             }
         }
-        
+
         tuya_system_sleep(10);
     }
 }
