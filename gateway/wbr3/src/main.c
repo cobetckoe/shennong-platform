@@ -27,6 +27,7 @@
 typedef struct {
     uint8_t rule_id;
     uint8_t device_type;
+    uint8_t species_id;
     float temp_high, temp_low;
     float humidity_high, humidity_low;
     uint8_t spray, fan, led;
