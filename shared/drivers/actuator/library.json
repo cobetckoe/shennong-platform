@@ -1,0 +1,10 @@
+{
+    "name": "shennong-actuators",
+    "version": "1.0.0",
+    "frameworks": "stm32cube",
+    "platforms": "ststm32",
+    "build": {
+        "srcDir": ".",
+        "includeDir": "."
+    }
+}

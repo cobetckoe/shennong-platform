@@ -1,27 +1,28 @@
-# 神农平台技术文档
+# 神农技术文档
 
 ## 系统架构
 
 ### 设计原则
 
-- **云端智能**：所有物种参数、控制策略、实时调控在云端完成
-- **设备极简**：设备只做采集上报和接收执行
+- **云端智能 + 本地自治**：云端 AI 分析决策，T5 本地执行自动化
+- **多模态交互**：图像识别 + 语音控制 + APP 远程
 - **分层解耦**：HAL → 驱动 → 设备，每层独立可替换
-- **配置驱动**：设备main.cpp只做硬件组装，不含底层逻辑
+- **跨设备联动**：虚拟子设备与涂鸦生态无缝对接
 
 ### 数据流
 
 ```
-用户APP → 涂鸦云（物种参数+控制策略） → 网关 → Zigbee → 子设备执行
-子设备（传感器数据） → Zigbee → 网关 → 涂鸦云 → 用户APP
+用户APP → 涂鸦云 ←→ T5网关(DuckyClaw) ←→ Zigbee ←→ 子设备
+                    ↕                    ↕
+              本地自动化引擎         图像识别+语音交互
 ```
 
 ### 硬件
 
 | 设备 | 组成 | 开发方式 | 功能 |
 |------|------|---------|------|
-| 网关 | WBR3 + ZS3L | TuyaOS | WiFi+Zigbee桥接 |
-| 子设备 | 立创地阔星(STM32F103) + ZS3L | PlatformIO | 采集+执行 |
+| 网关 | T5-AI (WiFi+BLE+Zigbee+摄像头+麦克风) | TuyaOpen + DuckyClaw | 桥接+自动化+图像+语音 |
+| 子设备 | STM32F103 + ZS3L | PlatformIO + STM32Cube | 采集+执行 |
 
 ### 通信
 
@@ -29,6 +30,68 @@
 |------|------|------|
 | 云→网关 | WiFi (涂鸦IoT) | DP数据点 |
 | 网关→设备 | Zigbee mesh | 115200 baud |
+| 用户→网关 | 语音 (ASR/TTS) | T5-AI 麦克风+喇叭 |
+| 用户→网关 | 图像 (摄像头) | T5-AI 摄像头模块 |
+
+## T5 网关功能模块
+
+### DuckyClaw 架构
+
+```
+gateway/t5/src/
+├── tuya_app_main.c          # 入口：初始化+主循环
+├── zigbee/
+│   ├── zigbee_manager.c/h   # Zigbee 子设备管理
+│   └── local_automation.c/h # 本地自动化 (CRON)
+├── camera/
+│   └── camera_module.c/h    # 摄像头/图像识别
+├── voice/
+│   └── voice_module.c/h     # 语音交互 (ASR/TTS)
+├── memory/                   # 记忆管理 (DuckyClaw)
+├── agent/                    # AI Agent (DuckyClaw)
+├── tools/                    # MCP 工具 (DuckyClaw)
+└── im/                       # IM 通知 (DuckyClaw)
+```
+
+### 图像识别
+
+| 功能 | 实现方式 |
+|------|---------|
+| 病虫害检测 | T5-AI 摄像头 → 云端 AI 识别 → 告警 |
+| 作物生长监测 | 定时拍照 → 云端分析 → 数据上报 |
+| 异常检测 | 本地对比 + 云端验证 |
+
+- 拍照间隔：5分钟（可配置）
+- 识别模型：云端 plant_disease_detect
+- 告警方式：语音播报 + APP 推送
+
+### 语音交互
+
+| 指令 | 动作 |
+|------|------|
+| "小农小农" | 唤醒词 |
+| "开风扇/关风扇" | 控制继电器 |
+| "开灯/关灯" | 控制补光灯 |
+| "查温度/查湿度" | 语音播报传感器数据 |
+| "状态报告" | 汇报所有设备状态 |
+| "全部打开/全部关闭" | 批量控制 |
+
+### 本地自动化
+
+基于 TuyaOpen CRON 实现：
+
+| 触发类型 | 说明 | 执行位置 |
+|---------|------|---------|
+| 定时 | 每天 X:XX 执行 | T5 CRON |
+| 传感器阈值 | 温度>30°C → 开风扇 | T5 每秒检查 |
+| 跨设备联动 | 设备A开 → 设备B也开 | T5 本地执行 |
+
+### 虚拟子设备
+
+每个 Zigbee 子设备自动注册为涂鸦虚拟设备：
+- APP 中显示为独立设备
+- 可与任何涂鸦设备通过智能场景联动
+- 每个子设备暴露温度/湿度/水泵/风扇等 DP 点
 
 ## 通信协议
 
@@ -36,31 +99,18 @@
 
 | 命令 | 方向 | 说明 |
 |------|------|------|
-| 0x01 | 设备→网关 | 心跳 (每30秒) |
+| 0x01 | 设备→网关 | 心跳 |
 | 0x02 | 双向 | 传感器数据(上行) / 控制规则(下行) |
+| 0x03 | 云→网关 | 控制规则下发 |
+| 0x04 | 云→网关 | DP值微调 |
+| 0x06 | T5→子设备 | 继电器直接控制 |
+| 0x07 | T5→子设备 | 场景同步 |
 
 ### 数据结构
 
-```c
-// 控制规则 (云端→设备)
-typedef struct {
-    uint8_t rule_id;        // 规则编号
-    uint8_t device_type;    // 设备类型
-    uint8_t species_id;     // 物种ID (0=使用手动参数)
-    float temp_high, temp_low;
-    float humidity_high, humidity_low;
-    uint8_t spray, fan, led;
-} __attribute__((packed)) control_rule_t;
-
-// 传感器数据 (设备→云端)
-typedef struct {
-    float temperature, humidity, light, ph;
-} __attribute__((packed)) sensor_data_t;
-```
+详见 `shared/protocols.h`
 
 ## 设备分类
-
-按农业功能分类，每个设备代表一类可种植/养殖的物种：
 
 | 类别 | 设备 | ID | 物种 |
 |------|------|-----|------|
@@ -75,17 +125,9 @@ typedef struct {
 | 藻类 | water | 0x30 | 螺旋藻、小球藻 |
 | 昆虫 | feed | 0x40 | 蟋蟀、面包虫 |
 
-## 运行时流程
-
-1. 设备启动，上报心跳，等待云端下发控制规则
-2. 用户在APP选择物种
-3. 云端匹配物种需求与设备能力，生成控制参数
-4. 下发 control_rule_t (含 species_id)
-5. 设备收到后直接执行控制
-
 ## 网络方案
 
-1000台规模推荐 **Zigbee mesh**：
+温室大棚推荐 **Zigbee mesh**：
 
 | 指标 | WiFi | Zigbee | Meshtastic(LoRa) |
 |------|------|--------|-------------------|
@@ -93,52 +135,44 @@ typedef struct {
 | 传输距离 | 30~50m | 100~300m | 1~5km |
 | 功耗 | 高 | 低 | 低 |
 | 实时性 | 好 | 好 | 差(1~10s) |
-| 带宽 | 高 | 中 | 极低 |
-
-Zigbee mesh：2~3个网关 + 10~20个路由节点覆盖1000台终端。
 
 ## 代码架构
 
 ```
 shared/
-  hal/                          硬件抽象层 (换MCU只改这层)
-    gpio.h/c                    GPIO
-    uart.h/c                    UART
-    i2c.h/c                     I2C
-    adc.h/c                     ADC
-    delay.h/c                   延时
+  hal/                          硬件抽象层
+    gpio.h/c, uart.h/c, i2c.h/c, adc.h/c, delay.h/c
   drivers/
-    sensor/                     传感器驱动 (可复用)
-      dht22.h/c                 温湿度
-      ds18b20.h/c               单总线温度
-      bh1750.h/c                I2C光照
-      hx711.h/c                 称重
-      ph_sensor.h/c             pH模拟量
-    actuator/                   执行器驱动 (可复用)
-      fan.h/c                   风扇
-      pump.h/c                  泵类
-      led.h/c                   LED补光
-      heater.h/c                加热片
+    sensor/                     传感器驱动
+    actuator/                   执行器驱动
   common/
-    device.h/c                  设备框架 (主循环/通信)
+    device.h/c                  设备框架
+    control_engine.h            控制引擎接口
   protocols.h                   通信协议
-```
 
-设备main.cpp只做硬件组装：声明驱动实例 → 实现采集/控制 → 启动。
+gateway/t5/                     T5 网关 (DuckyClaw + TuyaOpen)
+  src/
+    tuya_app_main.c             入口
+    zigbee/zigbee_manager.c/h   Zigbee 管理
+    zigbee/local_automation.c/h 本地自动化
+    camera/camera_module.c/h    图像识别
+    voice/voice_module.c/h      语音交互
+
+subdevice/plant/                子设备 (PlatformIO)
+  rootcrop/, leafcrop/, ...
+```
 
 ## 部署
 
 ### 网关
-- 硬件：WBR3 + ZS3L
-- 开发：Tuya Wind IDE + TuyaOS
-- 步骤：涂鸦平台创建产品 → 配置密钥 → 编译烧录 → 连接ZS3L
-- 引脚：ZS3L TX→GPIO4, RX→GPIO5
+- 硬件：T5-AI 开发板 (带摄像头+麦克风)
+- 开发：TuyaOpen SDK + DuckyClaw
+- 步骤：涂鸦平台创建产品 → 配置密钥 → 编译烧录
 
 ### 子设备
 - 硬件：STM32F103 + ZS3L + 传感器 + 执行器
-- 开发：PlatformIO + Arduino
+- 开发：PlatformIO + STM32Cube
 - 步骤：选设备目录 → 配置引脚 → 编译烧录
-- 架构：HAL → 驱动 → 设备main.cpp组装
 
 ```bash
 cd subdevice/plant/rootcrop

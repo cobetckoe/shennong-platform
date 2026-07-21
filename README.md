@@ -1,4 +1,4 @@
-# 神农平台
+# 神农
 
 基于涂鸦IoT平台的分布式AI农业生产系统。云端智能，设备极简。
 
@@ -15,3 +15,4 @@ pio run
 
 - [docs/README.md](docs/README.md) — 架构、协议、设备、部署
 - [docs/TAXONOMY.md](docs/TAXONOMY.md) — 物种生物分类数据
+    
