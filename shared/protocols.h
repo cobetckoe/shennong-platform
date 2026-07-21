@@ -184,7 +184,7 @@ typedef struct {
 // 支持: 内部子设备 + 外部涂鸦 Zigbee 设备 (灯具/开关等)
 
 // 目标设备类型
-#define TARGET_TYPE_SUBDEV      0   // 内部子设备 (神农)
+#define TARGET_TYPE_SUBDEV      0   // 内部子设备 (神农系统)
 #define TARGET_TYPE_ZIGBEE_EXT  1   // 外部涂鸦 Zigbee 设备 (灯具/开关/传感器)
 #define TARGET_TYPE_BLE         2   // 蓝牙设备 (蓝牙灯/开关/传感器)
 #define TARGET_TYPE_WIFI_CLOUD  3   // WiFi 涂鸦设备 (仅在线, 通过云端)

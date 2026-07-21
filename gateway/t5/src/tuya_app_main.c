@@ -1,5 +1,5 @@
 /**
- * 神农 T5 网关 - 主入口
+ * 神农系统 T5 网关 - 主入口
  * 基于 Wukong SDK + 本地自动化
  *
  * 功能模块:
@@ -134,7 +134,7 @@ static void on_time_sync(uint8_t hour, uint8_t minute, uint8_t weekday) {
 
 /* ==================== 系统初始化 ==================== */
 void tuya_app_main(void) {
-    TUYA_LOG("=== 神农 T5 网关启动 ===");
+    TUYA_LOG("=== 神农系统 T5 网关启动 ===");
     TUYA_LOG("版本: Wukong SDK + 本地自动化");
 
     /* 1. 云端同步初始化 */

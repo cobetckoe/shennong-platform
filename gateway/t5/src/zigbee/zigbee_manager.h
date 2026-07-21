@@ -1,5 +1,5 @@
 /**
- * 神农 T5 网关 - Zigbee 子设备管理器
+ * 神农系统 T5 网关 - Zigbee 子设备管理器
  */
 
 #ifndef ZIGBEE_MANAGER_H

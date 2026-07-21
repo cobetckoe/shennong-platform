@@ -1,5 +1,5 @@
 /**
- * 神农 T5 网关 - 本地自动化模块
+ * 神农系统 T5 网关 - 本地自动化模块
  */
 
 #ifndef LOCAL_AUTOMATION_H
